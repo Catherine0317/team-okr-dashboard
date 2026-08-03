@@ -1,0 +1,56 @@
+name: Refresh & Deploy OKR Dashboard
+
+on:
+  schedule:
+    - cron: "7 14 * * 2"   # Tuesday 07:07 America/Los_Angeles (14:07 UTC)
+  workflow_dispatch: {}      # allow manual "Run workflow"
+
+concurrency:
+  group: okr-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install deps
+        run: pip install "psycopg[binary]"
+
+      - name: Pull Supabase data
+        env:
+          PG_CONN: ${{ secrets.SUPABASE_PG_URL }}
+        run: python pipeline/pull_supabase.py
+
+      # - name: Pull Lark data   (enabled once LARK_APP_ID/SECRET are set)
+      #   env:
+      #     LARK_APP_ID: ${{ secrets.LARK_APP_ID }}
+      #     LARK_APP_SECRET: ${{ secrets.LARK_APP_SECRET }}
+      #   run: python pipeline/pull_lark.py
+
+      - name: Build dashboard
+        run: python pipeline/build.py
+
+      - name: Commit refreshed data
+        run: |
+          git config user.name  "okr-bot"
+          git config user.email "okr-bot@users.noreply.github.com"
+          git add data/ public/
+          git commit -m "chore: weekly data refresh $(date -u +%F)" || echo "no changes"
+          git push || echo "nothing to push"
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          npx --yes vercel deploy public --prod --yes \
+            --token "$VERCEL_TOKEN" \
+            --name team-okr-dashboard
