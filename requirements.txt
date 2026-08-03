@@ -1,1 +1,1 @@
-psycopg[binary]
+# no third-party deps — Supabase pull uses the Management API over stdlib urllib
