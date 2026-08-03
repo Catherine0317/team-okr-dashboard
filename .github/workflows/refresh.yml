@@ -30,7 +30,7 @@ jobs:
 
       - name: Pull Supabase data
         env:
-          PG_CONN: ${{ secrets.SUPABASE_PG_URL }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: python pipeline/pull_supabase.py
 
       # - name: Pull Lark data   (enabled once LARK_APP_ID/SECRET are set)

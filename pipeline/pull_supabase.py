@@ -19,7 +19,23 @@ DATA = os.path.join(ROOT, "data")
 now = datetime.date.today()
 MONTH = int(os.environ.get("MONTH", now.month))
 YEAR  = int(os.environ.get("YEAR", now.year))
-CONN  = os.environ["PG_CONN"]
+
+# Connection: prefer a full URI ($PG_CONN); otherwise build from the known
+# Supabase pooler coordinates + just the raw password ($SUPABASE_DB_PASSWORD)
+# so there's no URI to hand-assemble and no URL-encoding pitfalls.
+CONN = os.environ.get("PG_CONN")
+PGARGS = dict(
+    host=os.environ.get("PGHOST", "aws-0-us-west-1.pooler.supabase.com"),
+    port=int(os.environ.get("PGPORT", "5432")),
+    user=os.environ.get("PGUSER", "postgres.qiorojsrqguemncypfhs"),
+    dbname=os.environ.get("PGDATABASE", "postgres"),
+    password=os.environ.get("SUPABASE_DB_PASSWORD"),
+)
+
+def connect():
+    c = psycopg.connect(CONN) if CONN else psycopg.connect(**PGARGS)
+    c.prepare_threshold = None  # safe under Supabase pooler
+    return c
 
 def nb(s): return re.sub(r"[^a-z0-9]", "", (s or "").lower())
 
@@ -48,8 +64,7 @@ FROM rk WHERE rn<=20 ORDER BY brand_name, rn;
 
 def main():
     out = {}
-    with psycopg.connect(CONN) as c:
-        c.prepare_threshold = None  # safe under Supabase transaction pooler
+    with connect() as c:
         cur = c.cursor()
         cur.execute(TOP20_SQL, {"brands": brands, "m": MONTH, "y": YEAR})
         for brand, rn, vid, user, prod, gmv, orders, views in cur.fetchall():
