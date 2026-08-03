@@ -6,7 +6,7 @@ Weekly rebuild + Vercel deploy of the Team OKR Dashboard, run by GitHub Actions
 ## How it works
 `.github/workflows/refresh.yml` runs every **Tuesday 07:07 America/Los_Angeles** (and on manual
 "Run workflow"):
-1. `pipeline/pull_supabase.py` — refresh Supabase-sourced data via the Management API (SQL over HTTPS).
+1. `pipeline/pull_supabase.py` — refresh Supabase-sourced data via the Data API (PostgREST), aggregated in Python.
 2. `pipeline/pull_lark.py` — *(phase 2)* refresh roster + feature-adoption/binding via a Lark app.
 3. `pipeline/build.py` — assemble `public/index.html` via `pipeline/gen_kpi_html4.py`.
 4. Commit refreshed `data/` + deploy `public/` to Vercel.
@@ -17,7 +17,7 @@ Weekly rebuild + Vercel deploy of the Team OKR Dashboard, run by GitHub Actions
 `Settings → Secrets and variables → Actions → New repository secret`:
 | Secret | What | Where to get it |
 |---|---|---|
-| `SUPABASE_ACCESS_TOKEN` | Supabase Personal Access Token (`sbp_...`) — runs SQL via the Management API, no DB password needed | https://supabase.com/dashboard/account/tokens |
+| `SUPABASE_API_KEY` | Supabase secret API key (`sb_secret_...`) — reads tables via the Data API, no DB password needed | Supabase → Settings → API Keys |
 | `VERCEL_TOKEN` | Vercel deploy token | vercel.com/account/tokens (scope: nextwave-talent) |
 | `LARK_APP_ID` / `LARK_APP_SECRET` | *(phase 2)* Lark custom app | open.larksuite.com → Developer console |
 

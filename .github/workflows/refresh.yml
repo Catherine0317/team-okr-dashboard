@@ -27,7 +27,7 @@ jobs:
 
       - name: Pull Supabase data
         env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_API_KEY: ${{ secrets.SUPABASE_API_KEY }}
         run: python pipeline/pull_supabase.py
 
       # - name: Pull Lark data   (enabled once LARK_APP_ID/SECRET are set)
