@@ -5,6 +5,9 @@ on:
     - cron: "7 14 * * 2"   # Tuesday 07:07 America/Los_Angeles (14:07 UTC)
   workflow_dispatch: {}      # allow manual "Run workflow"
 
+permissions:
+  contents: write
+
 concurrency:
   group: okr-refresh
   cancel-in-progress: false
