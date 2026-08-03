@@ -50,7 +50,8 @@ jobs:
       - name: Deploy to Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: team_NpDfJIDV5DGdeI6PtDNpyN5f
+          VERCEL_PROJECT_ID: prj_n0HNcOTUyppmcmjaikxe85HqUYsH
         run: |
-          npx --yes vercel deploy public --prod --yes \
-            --token "$VERCEL_TOKEN" \
-            --name team-okr-dashboard
+          npx --yes vercel pull --yes --environment=production --token "$VERCEL_TOKEN"
+          npx --yes vercel deploy public --prod --yes --token "$VERCEL_TOKEN"
