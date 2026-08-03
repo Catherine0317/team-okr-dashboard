@@ -48,7 +48,9 @@ FROM rk WHERE rn<=20 ORDER BY brand_name, rn;
 
 def main():
     out = {}
-    with psycopg.connect(CONN) as c, c.cursor() as cur:
+    with psycopg.connect(CONN) as c:
+        c.prepare_threshold = None  # safe under Supabase transaction pooler
+        cur = c.cursor()
         cur.execute(TOP20_SQL, {"brands": brands, "m": MONTH, "y": YEAR})
         for brand, rn, vid, user, prod, gmv, orders, views in cur.fetchall():
             out.setdefault(nb(brand), []).append(
