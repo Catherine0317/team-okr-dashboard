@@ -2,7 +2,7 @@ import json
 rows=json.load(open('/tmp/kpi_rows2.json'))
 DATA=json.dumps(rows,ensure_ascii=False)
 html=r'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Team OKR Dashboard (Jun 2026 + Jul GMV Goal)</title>
+<title>Team OKR Dashboard (Aug 2026 GMV Actual)</title>
 <style>
 :root{--g:#137333;--gb:#C6EFCE;--r:#b10202;--rb:#F8CBCB;--am:#7a5b00;--amb:#FFF2CC;--ink:#1f2937;--mut:#6b7280;--line:#e5e7eb;--bl:#2563eb;}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#f7f8fa}
@@ -61,7 +61,7 @@ table.wk tbody tr:nth-child(even) td.mk{background:#eef1fb}
 .snap{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:8px}
 .scell{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px}.scell .t{font-size:11px;color:var(--mut)}.scell .v{font-size:18px;font-weight:700}
 </style></head><body>
-<header><h1>Team OKR Dashboard</h1><div class="sub">Core metrics: June 2026 · July GMV Goal vs Actual (through Jul 30) · 90 active brands · Supabase + forecast file</div></header>
+<header><h1>Team OKR Dashboard</h1><div class="sub">GMV Actual: August 2026 (through Aug 31) · other metrics: July snapshot · 87 active brands · Supabase</div></header>
 <div class="wrap">
 <div class="tabs" id="tabs"></div>
 <div id="filterbar"><input class="f" id="filter" placeholder="Filter by owner or brand…"></div>
@@ -119,8 +119,8 @@ const HIT={
 };
 const TABS={
  'SCM & ADs':{owner:'scm',hitcols:['hero','avv','ctr'],cols:[
-   {k:'jul_goal',h:'GMV Goal (Jul)',t:'target',fmt:money,num:1},
-   {k:'jul_actual',h:'GMV Actual (Jul)',t:'thru 7/30',fmt:money,num:1},
+   {k:'jul_goal',h:'GMV Goal',t:'target',fmt:money,num:1},
+   {k:'jul_actual',h:'GMV Actual (Aug)',t:'thru 8/31',fmt:money,num:1},
    {k:'gmv_att',h:'GMV Attainment',t:'≥100%',fmt:v=>v==null?'':Math.round(v*100)+'%',hit:'gmv',num:1},
    {k:'hero',h:'HERO',t:'≥1',fmt:v=>v??'',hit:'hero'},
    {k:'avv',h:'AVV',t:'≥1,500',fmt:v=>v==null?'':v.toLocaleString(),hit:'avv',num:1},
@@ -141,7 +141,7 @@ const TABS={
    {k:'adopt',h:'Feature Adoption',t:'≥80% (mean of 11)',fmt:v=>v==null?'':v+'%',hit:'adopt',num:1}]},
 };
 const KPI_META=[
- ['SCM','July GMV goal attainment','≥100%','gmv'],
+ ['SCM','GMV goal attainment (Aug actual)','≥100%','gmv'],
  ['SCM','HERO products','≥1','hero'],['SCM','AVV','≥1,500','avv'],['SCM','CTR','≥3.5%','ctr'],
  ['CSM','L3+ affiliate videos/mo','≥250 or 30%','l3plus'],
  ['Ops','Videos/brand/day','≥100','vpd'],['Ops','Binding all-4','100%','all4'],
