@@ -1921,7 +1921,9 @@ function renderTeam(){
   names.forEach(o=>{
     let bs=groups[o];let vis=f?bs.filter(r=>o.toLowerCase().includes(f)||r.brand.toLowerCase().includes(f)):bs;
     if(f&&!(o.toLowerCase().includes(f))&&vis.length===0)return;
-    h+=`<tr class="grp"><td>${o} <span class="cnt">· ${bs.length}</span></td>`;
+    let aggG=0,aggN=0;cfg.cols.forEach(c=>{if(c.pend||!c.hit)return;aggN+=bs.filter(r=>HIT[c.hit](r)!==null).length;aggG+=bs.filter(r=>HIT[c.hit](r)===true).length;});
+    let aggTxt=aggN?`<span class="pill ${pc(aggG/aggN)}" title="Total KRs hit / applicable across all scored metrics on this tab">${aggG}/${aggN}</span>`:'';
+    h+=`<tr class="grp"><td>${o} <span class="cnt">· ${bs.length} brand${bs.length>1?'s':''}</span> ${aggTxt}</td>`;
     cfg.cols.forEach(c=>{
       if(c.pend||!c.hit){h+='<td></td>';return;}
       let sc=bs.filter(r=>HIT[c.hit](r)!==null),good=bs.filter(r=>HIT[c.hit](r)===true).length;
